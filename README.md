@@ -2,7 +2,7 @@
 
 NOTE: all kafka commands taken from quickstart (https://kafka.apache.org/quickstart)
 
-#set up Kafka
+#### set up Kafka ####
 sudo apt-get update
 sudo apt-get install default-jre
 sudo apt-get install python-pip
@@ -22,7 +22,7 @@ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 -
 //Run [python make_events.py] from localhost with kafka installed and topic created, it will send to kafka using Python's KafkaProducer library
 //YOu can use [bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic locs] to make sure the records are being produced
 
-#set up MemSQL: https://docs.memsql.com/guides/latest/install-memsql/
+#### set up MemSQL: https://docs.memsql.com/guides/latest/install-memsql/ ####
 //Create the schemas
 //create pipeline
 //ALTER PIPELINE SET OFFSETS LATEST
