@@ -1,6 +1,3 @@
-
-
-
 delimiter //
 CREATE OR REPLACE PROCEDURE test(batch QUERY(
 	_icao VARCHAR(10),

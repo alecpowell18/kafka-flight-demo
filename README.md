@@ -1,32 +1,35 @@
 # memsql-flight-demo
-
-NOTE: all kafka commands taken from quickstart (https://kafka.apache.org/quickstart)
+# updated 04-15-20 for confluent platform 5.4
 
 #### set up Kafka ####
-sudo apt-get update
-sudo apt-get install default-jre
-sudo apt-get install python-pip
-pip install unirest
-pip install kafka-python
-wget http://mirror.cc.columbia.edu/pub/software/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz
-
-tar -xvf kafka/
-cd kafka
-
-nohup bin/zookeeper-server-start.sh config/zookeeper.properties > zoo.out &
-nohup bin/kafka-server-start.sh config/server.properties > kafka.out &
+docker-compose up -d
+pip3 install -r requirements.txt
 
 //create topic
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic locs
+kafka-topics --bootstrap-server localhost:9092 --create --topic locs --partitions 1 --replication-factor 1
 
-//Run [python make_events.py] from localhost with kafka installed and topic created, it will send to kafka using Python's KafkaProducer library
-//YOu can use [bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic locs] to make sure the records are being produced
+//produce records
+./make_events.py
+
+//You can use
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic locs --from-beginning
+//to make sure the records are being produced
 
 #### set up MemSQL: https://docs.memsql.com/guides/latest/install-memsql/ ####
+//docker quickstart, or could merge into the docker-compose.yml
+
 //Create the schemas
-//create pipeline
-//ALTER PIPELINE SET OFFSETS LATEST
+memsql -uroot -h0 < 01-tables-setup.sql
+//create pipeline(s)
+memsql -uroot -h0 < 02-pipelines-setup.sql 
+
+memsql -uroot -h0 < 03-udfs-sps.sql
+
+memsql -uroot -h0 < 04-pipeline-into-sp.sql
+
+ALTER PIPELINE SET OFFSETS LATEST?
 //start pipeline!
+
 
 NOTE:
 //Per main() in the make_events script, the script only runs for 10 seconds and stops the kafka producing, so you may have to loop it or just restart it

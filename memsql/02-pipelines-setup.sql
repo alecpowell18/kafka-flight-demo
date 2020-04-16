@@ -1,3 +1,5 @@
+USE demo;
+
 CREATE PIPELINE locations
 AS LOAD DATA KAFKA '172.31.46.241:9092/locs'
 WITH TRANSFORM ('memsql://json', '', '-r "[.icao24, .callsign, .origin_country, .time_position, .last_contact, .lon, .lat, .geo_altitude, .on_ground, .velocity] | @tsv"')
@@ -24,37 +26,3 @@ INTO TABLE flightupdates
 FIELDS TERMINATED BY '\t'
 (icao, callsign)
 ON DUPLICATE KEY UPDATE count = count + 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-LOAD DATA INFILE '/home/ubuntu/airports.csv'
-SKIP ALL ERRORS
-INTO TABLE airportlocs
-FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
-LINES TERMINATED BY '\n' STARTING BY '';
-
-
-LOAD DATA INFILE '/home/ubuntu/airlines.csv'
-SKIP ALL ERRORS
-INTO TABLE airlines
-FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
-LINES TERMINATED BY '\n' STARTING BY '';

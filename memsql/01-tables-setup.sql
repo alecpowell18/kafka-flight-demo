@@ -61,3 +61,16 @@ CREATE TABLE nearest_airports (
 	distance float,
 	PRIMARY KEY (`icao`, `callsign`)
 );
+
+LOAD DATA INFILE './data/airports.csv'
+SKIP ALL ERRORS
+INTO TABLE airportlocs
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
+LINES TERMINATED BY '\n' STARTING BY '';
+
+
+LOAD DATA INFILE './data/airlines.csv'
+SKIP ALL ERRORS
+INTO TABLE airlines
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
+LINES TERMINATED BY '\n' STARTING BY '';

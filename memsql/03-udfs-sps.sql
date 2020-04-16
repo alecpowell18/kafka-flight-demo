@@ -1,3 +1,5 @@
+USE demo;
+
 delimiter //
 CREATE OR REPLACE FUNCTION find_nearest_airport(arg_callsign VARCHAR(10)) RETURNS TABLE AS
 RETURN
@@ -37,5 +39,3 @@ BEGIN
 END
 //
 delimiter ;
-
-
