@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS demo;
 USE demo;
 
-CREATE TABLE flightlocs (
+CREATE TABLE IF NOT EXISTS flightlocs (
 	icao varchar(10),
 	callsign varchar(10),
 	origin_country varchar(50),
@@ -16,14 +16,14 @@ CREATE TABLE flightlocs (
 	PRIMARY KEY id (`icao`,`callsign`)
 );
 
-CREATE TABLE flightupdates (
+CREATE TABLE IF NOT EXISTS flightupdates (
 	icao varchar(10),
 	callsign varchar(10),
 	count int default 0,
 	PRIMARY KEY id (`icao`,`callsign`)
 );
 
-CREATE TABLE airportlocs (
+CREATE TABLE IF NOT EXISTS airportlocs (
 	id int PRIMARY KEY,
 	ident text,
 	type text,
@@ -45,7 +45,7 @@ CREATE TABLE airportlocs (
 	location as concat("POINT(",cast(longitude_deg as binary)," ",cast(latitude_deg as binary),")") PERSISTED GEOGRAPHYPOINT
 );
 
-CREATE TABLE airlines (
+CREATE TABLE IF NOT EXISTS airlines (
 	operatorCode text PRIMARY KEY,
 	operatorName text,
 	countryName text,
@@ -53,7 +53,7 @@ CREATE TABLE airlines (
 	lastUpdate timestamp
 );
 
-CREATE TABLE nearest_airports (
+CREATE TABLE IF NOT EXISTS nearest_airports (
 	icao varchar(10),
 	callsign varchar(10),
 	airport_iata varchar(10),
@@ -62,15 +62,17 @@ CREATE TABLE nearest_airports (
 	PRIMARY KEY (`icao`, `callsign`)
 );
 
-LOAD DATA INFILE './data/airports.csv'
+LOAD DATA LOCAL INFILE './data/airports.csv'
 SKIP ALL ERRORS
 INTO TABLE airportlocs
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
-LINES TERMINATED BY '\n' STARTING BY '';
+LINES TERMINATED BY '\n' STARTING BY ''
+IGNORE 1 LINES;
 
 
-LOAD DATA INFILE './data/airlines.csv'
+LOAD DATA LOCAL INFILE './data/airlines.csv'
 SKIP ALL ERRORS
 INTO TABLE airlines
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
-LINES TERMINATED BY '\n' STARTING BY '';
+LINES TERMINATED BY '\n' STARTING BY ''
+IGNORE 1 LINES;

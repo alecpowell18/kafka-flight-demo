@@ -1,9 +1,14 @@
 # memsql-flight-demo
 # updated 04-15-20 for confluent platform 5.4
+# TODO: join on airline codes to add airlines to data set.
+# TODO2: add argument for wait time in python producer script.
 
-#### set up Kafka ####
-docker-compose up -d
+#### set up Zookeeper, Kafka & MemSQL ####
+//install python3
+//install mysql-client
+//install docker
 pip3 install -r requirements.txt
+docker-compose up -d
 
 //create topic
 kafka-topics --bootstrap-server localhost:9092 --create --topic locs --partitions 1 --replication-factor 1
@@ -12,24 +17,21 @@ kafka-topics --bootstrap-server localhost:9092 --create --topic locs --partition
 ./make_events.py
 
 //You can use
-kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic locs --from-beginning
+kafka-console-consumer --bootstrap-server localhost:9092 --topic locs --from-beginning --max-messages 10
 //to make sure the records are being produced
 
-#### set up MemSQL: https://docs.memsql.com/guides/latest/install-memsql/ ####
-//docker quickstart, or could merge into the docker-compose.yml
+//Create the schemas, enable load data local to load from source file
+mysql -uroot -h0 --local-infile < 01-tables-setup.sql
 
-//Create the schemas
-memsql -uroot -h0 < 01-tables-setup.sql
 //create pipeline(s)
-memsql -uroot -h0 < 02-pipelines-setup.sql 
+mysql -uroot -h0 < 02-pipelines-setup.sql 
 
-memsql -uroot -h0 < 03-udfs-sps.sql
+//create UDFs and SP
+mysql -uroot -h0 < 03-udfs-sps.sql
 
-memsql -uroot -h0 < 04-pipeline-into-sp.sql
+//create pipeline which will use SP
+mysql -uroot -h0 < 04-pipeline-into-sp.sql
 
-ALTER PIPELINE SET OFFSETS LATEST?
-//start pipeline!
-
-
-NOTE:
-//Per main() in the make_events script, the script only runs for 10 seconds and stops the kafka producing, so you may have to loop it or just restart it
+//start pipelines!
+//use localhost:8080 to use MemSQL Studio , or command line to do so:
+mysql -uroot -h0 demo -e 'START ALL PIPELINES;'

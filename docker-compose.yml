@@ -33,3 +33,15 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+
+  memsql:
+    image: memsql/cluster-in-a-box:centos-7.0.14-e9a36d3e69-1.9.5-1.4.4
+    hostname: memsql
+    container_name: memsql-ciab
+    ports:
+      - "3306:3306"
+      - "8080:8080"
+    environment:
+      LICENSE_KEY: ${MEMSQL_LICENSE_KEY}
+      START_AFTER_INIT: 'true'
+    command: "/startup"

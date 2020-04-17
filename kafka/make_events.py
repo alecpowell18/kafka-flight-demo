@@ -3,12 +3,11 @@ import requests
 import json
 import threading, logging, time
 import multiprocessing
-# from kafka import KafkaProducer
 from confluent_kafka import Producer
 # from opensky_api import OpenSkyApi
 
 
-class Producer(threading.Thread):
+class MyProducer(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.stop_event = threading.Event()
@@ -17,17 +16,15 @@ class Producer(threading.Thread):
         self.stop_event.set()
 
     def run(self):
-        #producer = KafkaProducer(bootstrap_servers='localhost:9092')
-        # producer = KafkaProducer(bootstrap_servers='localhost:9092', value_serializer=lambda v: json.dumps(v).encode('utf-8'))
         p = Producer({'bootstrap.servers': 'localhost:9092'})
 
         while not self.stop_event.is_set():
             messages = callapi()
             for m in messages:
-                p.produce('locs', m.encode('utf-8'))
-            time.sleep(1)
-            print("producing" + len(messages) + " messages...")
+                p.produce('locs', json.dumps(m).encode('utf-8'))
+            print("produced " + str(len(messages)) + " messages...")
             p.flush()
+            time.sleep(300)
 
 def callapi():
     #new version?
@@ -45,7 +42,6 @@ def callapi():
     )
     if r.status_code != 200:
         print("wat. " + r.status_code)
-    # print(r.text)
     # Serialize json messages
     messages = []
     data = json.loads(r.text)
@@ -70,12 +66,13 @@ def callapi():
 
 def main():
     tasks = [
-        Producer()
+        MyProducer()
     ]
 
     for t in tasks:
         t.start()
 
+    # 30s total run time
     time.sleep(30)
 
     for task in tasks:
