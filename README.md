@@ -1,6 +1,6 @@
 # kafka-flight-demo
 
-![Dashboard screenshot](screenshot.png?raw=true "Kafka-flight-demo Looker Dashboard")
+![Dashboard screenshot](./looker/dash-screenshot.png?raw=true "Kafka-flight-demo Looker Dashboard")
 
 ### Author: Alec Powell (apowell@confluent.io)
 #### This repo uses a Python producer to call the OpenSky REST API (https://opensky-network.org/apidoc/rest.html) to fetch live flight locations for thousands of planes around the globe and feed them into Apache Kafka. 
