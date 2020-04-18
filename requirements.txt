@@ -1,0 +1,8 @@
+requests 
+json
+threading
+logging
+time
+multiprocessing
+confluent_kafka 
+opensky_api
