@@ -5,9 +5,7 @@
 ### Author: Alec Powell (apowell@confluent.io)
 #### This repo uses a Python producer to call the OpenSky REST API (https://opensky-network.org/apidoc/rest.html) to fetch live flight locations for thousands of planes around the globe and feed them into Apache Kafka. 
 #### Last updated: 04-15-20 for Confluent Platform 5.4
-#### TODO: join on airline codes to add airlines to data set.
-#### TODO2: add argument for wait time in python producer script.
-#### TODO3: add some message produce logging in producer
+#### TODO: add some message produce logging in producer
 
 STEPS (Ubuntu Bionic-18.04):
 1. Install pre-reqs
