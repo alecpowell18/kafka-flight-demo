@@ -7,7 +7,7 @@
 #### Last updated: 04-15-20 for Confluent Platform 5.4
 #### TODO: add some message produce logging in producer
 
-STEPS (Ubuntu Bionic-18.04):
+STEPS (Tested on Ubuntu Bionic-18.04):
 1. Install pre-reqs
 ```bash
 sudo apt update
@@ -17,6 +17,7 @@ sudo apt install mysql-client -y
 #install docker
 sudo apt install python3-pip libffi-dev -y
 curl -fsSL https://get.docker.com/ | sh
+#you may have to logout and log back in for this usermod to register
 sudo usermod -aG docker $(whoami) 
 sudo systemctl start docker
 sudo systemctl enable docker
@@ -38,9 +39,9 @@ docker-compose up -d
 sudo apt install librdkafka-dev -y
 pip3 install -r requirements.txt
 #create topic
-./create_topic.py
+./kafka/create_topic.py
 #produce records
-nohup ./make_events.py > producer-out.log &
+nohup ./kafka/make_events.py --time 500 > producer.log &
 ```
 
 4. Prepare the db and pipelines
@@ -49,6 +50,7 @@ nohup ./make_events.py > producer-out.log &
 mysql -uroot -h 127.0.0.1 -P 3306
 exit
 #Create the schemas, enable load data local to load from source file
+cd memsql/
 mysql -uroot -h0 --local-infile < 01-tables-setup.sql
 #create pipeline(s)
 mysql -uroot -h0 < 02-pipelines-setup.sql 

@@ -8,6 +8,7 @@ RETURN
 	ROUND(GEOGRAPHY_DISTANCE(a.location, b.location), 0) AS distance
 	FROM flightlocs a, airportlocs b
 	WHERE a.callsign = arg_callsign
+    AND TIME_TO_SEC(TIMEDIFF(NOW(), a.last_contact)) < 3600
 	AND b.type = 'large_airport'
 	ORDER BY distance
 	LIMIT 1;//
@@ -18,7 +19,7 @@ DELIMITER ;
 DELIMITER //
 CREATE OR REPLACE PROCEDURE update_nearest_airports() AS
 DECLARE
-        my_query QUERY(callsign VARCHAR(10), altitude INT) = SELECT callsign, altitude FROM flightlocs LIMIT 100;
+        my_query QUERY(callsign VARCHAR(10), altitude INT) = SELECT callsign, altitude FROM flightlocs ORDER BY RAND() LIMIT 100;
         my_array ARRAY(RECORD(callsign VARCHAR(10), altitude INT));
         _callsign VARCHAR(10);
         _altitude INT;

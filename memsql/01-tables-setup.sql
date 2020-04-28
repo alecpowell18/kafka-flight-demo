@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS nearest_airports (
 	icao varchar(10),
 	callsign varchar(10),
 	airport_iata varchar(10),
-	airport_name varchar(10),
+	airport_name varchar(100),
 	distance float,
 	PRIMARY KEY (`icao`, `callsign`)
 );
