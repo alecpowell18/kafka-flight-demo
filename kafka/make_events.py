@@ -7,7 +7,6 @@ import argparse
 from confluent_kafka import Producer
 # from opensky_api import OpenSkyApi
 
-
 class MyProducer(threading.Thread):
     def __init__(self, topic, delay):
         threading.Thread.__init__(self)
@@ -20,7 +19,6 @@ class MyProducer(threading.Thread):
 
     def run(self):
         p = Producer({'bootstrap.servers': 'localhost:9092'})
-
         while not self.stop_event.is_set():
             messages = call_api()
             print(messages[0])
@@ -34,7 +32,7 @@ class MyProducer(threading.Thread):
             time.sleep(self.delay_time)
 
 def call_api():
-    #new version?
+    # Could use new version in the future which binds to API
     # api = OpenSkyApi()
     # s = api.get_states()
     # print(s)
@@ -75,10 +73,6 @@ def run_tasks(args):
     for i in range(0,args.num_threads):
         tasks.append(MyProducer(args.topic_name, args.delay_time))
 
-    # tasks = [
-    #     MyProducer(),
-    #     MyProducer()
-    # ]
     for t in tasks:
         t.start()
 
@@ -96,8 +90,8 @@ def run_tasks(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Produce data to kafka topic.')
-    parser.add_argument('--time', type=int, dest='runtime', required=True, help='total runtime in seconds')
-    parser.add_argument('--topic-name', type=str, dest='topic_name', required=True, help='name of Kafka topic to produce to')
+    parser.add_argument('--time', type=int, dest='runtime', default=300, help='total runtime in seconds')
+    parser.add_argument('--topic-name', type=str, dest='topic_name', default='locs', help='name of Kafka topic to produce to')
     parser.add_argument('--delay', type=int, dest='delay_time', default=10, help='time (s) in between API calls')
     parser.add_argument('--num-threads', dest='num_threads', default=1, help='number of threads')
 

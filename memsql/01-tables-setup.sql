@@ -8,8 +8,6 @@ CREATE TABLE IF NOT EXISTS flightlocs (
 	time_position timestamp,
 	last_contact timestamp,
 	location GEOGRAPHYPOINT,
-	-- longitude_deg float,
-	-- latitude_deg float,
 	altitude int,
 	on_ground boolean,
 	velocity int,
@@ -68,7 +66,6 @@ INTO TABLE airportlocs
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
 LINES TERMINATED BY '\n' STARTING BY ''
 IGNORE 1 LINES;
-
 
 LOAD DATA LOCAL INFILE './data/airlines.csv'
 SKIP ALL ERRORS

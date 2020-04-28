@@ -1,24 +1,24 @@
 USE demo;
 
-delimiter //
+DELIMITER //
 CREATE OR REPLACE FUNCTION find_nearest_airport(arg_callsign VARCHAR(10)) RETURNS TABLE AS
 RETURN
-select a.icao, a.callsign,
-b.iata_code as IATA_Code,b.name as Airport,
-round(GEOGRAPHY_DISTANCE(a.location, b.location), 0) as distance
-from flightlocs a, airportlocs b
-where a.callsign = arg_callsign
-and b.type = 'large_airport'
-order by distance
-limit 1;//
-delimiter ;
+	SELECT a.icao, a.callsign,
+	b.iata_code AS IATA_Code, b.name AS Airport,
+	ROUND(GEOGRAPHY_DISTANCE(a.location, b.location), 0) AS distance
+	FROM flightlocs a, airportlocs b
+	WHERE a.callsign = arg_callsign
+	AND b.type = 'large_airport'
+	ORDER BY distance
+	LIMIT 1;//
+DELIMITER ;
 
 
 -- Function to update nearest airports table
-delimiter //
+DELIMITER //
 CREATE OR REPLACE PROCEDURE update_nearest_airports() AS
 DECLARE
-        my_query QUERY(callsign VARCHAR(10), altitude INT) = SELECT callsign, altitude from flightlocs limit 100;
+        my_query QUERY(callsign VARCHAR(10), altitude INT) = SELECT callsign, altitude FROM flightlocs LIMIT 100;
         my_array ARRAY(RECORD(callsign VARCHAR(10), altitude INT));
         _callsign VARCHAR(10);
         _altitude INT;
@@ -28,15 +28,15 @@ BEGIN
                 _callsign = i.callsign;
                 _altitude = i.altitude;
                 IF _altitude > 500 THEN
-                        replace into nearest_airports select * from find_nearest_airport(concat('',_callsign));
+                        REPLACE INTO nearest_airports SELECT * FROM find_nearest_airport(concat('',_callsign));
                 END IF;
         END LOOP;
 END //
-delimiter ;
+DELIMITER ;
 
 
 -- Function to receive inputs from Kafka pipeline
-delimiter //
+DELIMITER //
 CREATE OR REPLACE PROCEDURE micro_batch_sp(batch QUERY(
 	_icao VARCHAR(10),
 	_callsign VARCHAR(10),
@@ -48,15 +48,15 @@ CREATE OR REPLACE PROCEDURE micro_batch_sp(batch QUERY(
 	_on_ground BOOLEAN,
 	_velocity INT)) AS
 DECLARE
-	callsignQ QUERY(callsign varchar(10)) = select _callsign from batch;
+	callsignQ QUERY(callsign varchar(10)) = SELECT _callsign FROM batch;
 	callsigns ARRAY(RECORD(callsign varchar(10))) = collect(callsignQ);
 	callsign_value varchar(10);
 BEGIN
-	REPLACE INTO flightlocs SELECT * from batch;
+	REPLACE INTO flightlocs SELECT * FROM batch;
 
 	INSERT INTO flightupdates (icao, callsign)
-		SELECT _icao, _callsign from batch
+		SELECT _icao, _callsign FROM batch
 		ON DUPLICATE KEY UPDATE count = count + 1;
 	CALL update_nearest_airports();
 END //
-delimiter ;
+DELIMITER ;
