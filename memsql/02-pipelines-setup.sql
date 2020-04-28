@@ -1,5 +1,7 @@
 USE demo;
 
+
+-- Pipeline to update flight locations
 CREATE PIPELINE IF NOT EXISTS locations_pipeline AS
 LOAD DATA KAFKA 'kafka:29092/locs'
 WITH TRANSFORM ('memsql://json', '', '-r "[.icao24, .callsign, .origin_country, .time_position, .last_contact, .lon, .lat, .geo_altitude, .on_ground, .velocity] | @tsv"')
@@ -20,6 +22,7 @@ on_ground = VALUES(flightlocs.on_ground),
 velocity = VALUES(flightlocs.velocity);
 
 
+-- Pipeline to count how many pings per flight
 CREATE PIPELINE IF NOT EXISTS counts_pipeline AS
 LOAD DATA KAFKA 'kafka:29092/locs'
 WITH TRANSFORM ('memsql://json', '', '-r "[.icao24, .callsign] | @tsv"')

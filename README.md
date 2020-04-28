@@ -4,8 +4,7 @@
 
 ### Author: Alec Powell (apowell@confluent.io)
 #### This repo uses a Python producer to call the OpenSky REST API (https://opensky-network.org/apidoc/rest.html) to fetch live flight locations for thousands of planes around the globe and feed them into Apache Kafka. 
-#### Last updated: 04-15-20 for Confluent Platform 5.4
-#### TODO: add some message produce logging in producer
+#### Last updated: 04-27-20 for Confluent Platform 5.5
 
 STEPS (Tested on Ubuntu Bionic-18.04):
 1. Install pre-reqs
@@ -40,7 +39,8 @@ sudo apt install librdkafka-dev -y
 pip3 install -r requirements.txt
 #create topic
 ./kafka/create_topic.py
-#produce records
+#produce records - default Kafka topic = 'locs', default time between API calls = 10s
+#run ./kafka/make_events.py --help for script options
 nohup ./kafka/make_events.py --time 500 > producer.log &
 ```
 

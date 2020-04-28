@@ -1,5 +1,7 @@
 USE demo;
 
+
+-- Table-valued function to find the nearest airport to the given callsign
 DELIMITER //
 CREATE OR REPLACE FUNCTION find_nearest_airport(arg_callsign VARCHAR(10)) RETURNS TABLE AS
 RETURN
@@ -15,7 +17,7 @@ RETURN
 DELIMITER ;
 
 
--- Function to update nearest airports table
+-- Procedure to update nearest airports table
 DELIMITER //
 CREATE OR REPLACE PROCEDURE update_nearest_airports() AS
 DECLARE
@@ -36,7 +38,7 @@ END //
 DELIMITER ;
 
 
--- Function to receive inputs from Kafka pipeline
+-- Procedure which will process inputs from Kafka pipeline
 DELIMITER //
 CREATE OR REPLACE PROCEDURE micro_batch_sp(batch QUERY(
 	_icao VARCHAR(10),
