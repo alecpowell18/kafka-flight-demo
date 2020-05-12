@@ -1,7 +1,7 @@
 USE demo;
 
 
--- Table-valued function to find the nearest airport to the given callsign
+-- User-defined function to find the nearest airport to the given callsign
 DELIMITER //
 CREATE OR REPLACE FUNCTION find_nearest_airport(arg_callsign VARCHAR(10)) RETURNS TABLE AS
 RETURN
