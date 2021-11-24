@@ -1,2 +1,3 @@
-requests 
-confluent_kafka 
+requests
+certifi
+confluent-kafka[avro,json,protobuf]>=1.4.2
