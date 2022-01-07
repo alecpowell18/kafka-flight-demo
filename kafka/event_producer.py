@@ -89,19 +89,20 @@ if __name__ == '__main__':
 
     schema_registry_client = SchemaRegistryClient(schema_registry_conf)
 
-    name_avro_serializer = AvroSerializer(schema_registry_client = schema_registry_client,
-                                          schema_str = ccloud_lib.name_schema,
-                                          to_dict = ccloud_lib.Name.name_to_dict)
-    count_avro_serializer = AvroSerializer(schema_registry_client = schema_registry_client,
-                                           schema_str =  ccloud_lib.count_schema,
-                                           to_dict = ccloud_lib.Count.count_to_dict)
+    # name_avro_serializer = AvroSerializer(schema_registry_client = schema_registry_client,
+    #                                       schema_str = ccloud_lib.name_schema,
+    #                                       to_dict = ccloud_lib.Name.name_to_dict)
+    # count_avro_serializer = AvroSerializer(schema_registry_client = schema_registry_client,
+    #                                        schema_str =  ccloud_lib.count_schema,
+    #                                        to_dict = ccloud_lib.Count.count_to_dict)
     flight_avro_serializer = AvroSerializer(schema_registry_client = schema_registry_client,
                                            schema_str =  ccloud_lib.flight_schema,
                                            to_dict = ccloud_lib.Flight.flight_to_dict)
 
     # for full list of configurations, see:
-    #  https://docs.confluent.io/platform/current/clients/confluent-kafka-python/#serializingproducer
+    # https://docs.confluent.io/platform/current/clients/confluent-kafka-python/#serializingproducer
     producer_conf = ccloud_lib.pop_schema_registry_params_from_config(conf)
+    # no key for this dataset (yet)
     # producer_conf['key.serializer'] = name_avro_serializer
     producer_conf['value.serializer'] = flight_avro_serializer
     producer = SerializingProducer(producer_conf)
