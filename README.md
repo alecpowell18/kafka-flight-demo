@@ -4,11 +4,11 @@
 
 ### Author: Alec Powell (apowell@confluent.io)
 #### This repo uses a Python producer script to call the OpenSky REST API (https://opensky-network.org/apidoc/rest.html) to fetch live flight locations for thousands of planes around the globe and feed them into an Apache Kafka cluster. 
-#### Last updated: 11-24-2021 for Confluent Cloud & BigQuery ("SaaS-ified" version)
+#### Last updated: 01-07-2022 for Confluent Cloud & BigQuery ("SaaS-ified" version)
 
 
 ## "SaaS-ified" version (Confluent Cloud + Google BigQuery)
-STEPS (as of 11-24-2021)
+STEPS (as of 01-07-2022)
 1. Install pre-reqs (note new v2 of Confluent CLI was released Nov 2021)
 
 Make [Confluent Cloud](https://confluent.cloud/signup) and GCP accounts
@@ -55,6 +55,7 @@ basic.auth.user.info=<API-key>:<API-secret>
 
 4. Produce data! 
 
+Our producer is based on Confluent's example [script](https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html) using confluent-kafka Python client.
 Call the event producer script from the `kafka` directory. `-f` is path to your librdkafka.config file, `-t` is topic name, `-n` is number of consecutive API calls you want to make (there is a 10second sleep between API calls, so `-n 3` will take ~ 30seconds to run) 
 ```bash
 ./event_producer.py -f librdkafka.config -t flights -n 20
@@ -75,7 +76,7 @@ Use the UI -> "Connectors" page to create a BigQuery Sink connector, with 1 task
 Browse [bigquery.sql](bigquery/bigquery.sql) for query ideas.
 
 
-## Dockerized version (Confluent Platform + MemSQL/SingleStore)
+## Dockerized/local version (Confluent Platform + MemSQL/SingleStore)
 STEPS (Last tested on Ubuntu Bionic-18.04 in 04-2020):
 1. Install pre-reqs
 ```bash
